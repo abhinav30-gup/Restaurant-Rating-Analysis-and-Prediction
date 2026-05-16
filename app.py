@@ -424,25 +424,62 @@ st.dataframe(
 )
 
 # =========================
-# GOOGLE MAPS
+# DYNAMIC GOOGLE MAPS
 # =========================
 
 st.header("🗺️ Restaurant Location Map")
 
-# Example coordinates
-restaurant_map = folium.Map(
-    location=[28.6139, 77.2090],
-    zoom_start=5
+# City coordinates
+city_coordinates = {
+
+    "New Delhi": [28.6139, 77.2090],
+    "Mumbai": [19.0760, 72.8777],
+    "Bangalore": [12.9716, 77.5946],
+    "Hyderabad": [17.3850, 78.4867],
+    "Pune": [18.5204, 73.8567],
+    "Chennai": [13.0827, 80.2707],
+    "Kolkata": [22.5726, 88.3639],
+    "Jaipur": [26.9124, 75.7873],
+    "London": [51.5074, -0.1278],
+    "Dubai": [25.2048, 55.2708],
+    "Istanbul": [41.0082, 28.9784]
+}
+
+# Select city
+map_city = st.selectbox(
+    "📍 Select City for Map",
+    list(city_coordinates.keys())
 )
 
+# Coordinates
+lat, lon = city_coordinates[map_city]
+
+# Create map
+restaurant_map = folium.Map(
+    location=[lat, lon],
+    zoom_start=11
+)
+
+# Marker
 folium.Marker(
-    [28.6139, 77.2090],
-    popup="Top Restaurant Area"
+    [lat, lon],
+
+    popup=f"📍 {map_city}",
+
+    tooltip=map_city,
+
+    icon=folium.Icon(
+        color="green",
+        icon="cutlery",
+        prefix="fa"
+    )
+
 ).add_to(restaurant_map)
 
+# Show map
 st_folium(
     restaurant_map,
-    width=700,
+    width=900,
     height=500
 )
 
