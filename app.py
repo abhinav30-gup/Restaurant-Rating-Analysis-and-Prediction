@@ -53,7 +53,11 @@ model = pickle.load(
 # LOAD DATASET
 # =========================
 
-df = pd.read_csv("Dataset .csv" , encoding='iso-8859-1')
+df = pd.read_csv(
+    "Dataset .csv",
+    encoding='utf-8',
+    encoding_errors='ignore'
+)
 
 # =========================
 # TITLE
