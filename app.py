@@ -137,7 +137,7 @@ if menu == "Signup":
 # Login
 if menu == "Login":
 
-    if st.sidebar.button("Login"):
+    if st.sidebar.button("Logout", key="logout_btn"):
 
         if username in users and users[username] == password:
 
@@ -155,7 +155,7 @@ logged_in = st.session_state.get("logged_in", False)
 # If not logged in
 if not logged_in:
 
-    st.title("🔐 Please Login First")
+    st.title("🔐 Please Login First")    
 
     st.warning("Login to access the AI Restaurant Dashboard")
 
@@ -167,7 +167,7 @@ st.sidebar.success(
 )
 
 # Logout button
-if st.sidebar.button("Logout"):
+if st.sidebar.button("Logout", key="logout_btn"):
 
     st.session_state.logged_in = False
 
@@ -182,7 +182,7 @@ if "logged_in" in st.session_state:
 # =========================
 if logged_in:
 
-    if st.sidebar.button("Logout"):
+    if st.sidebar.button("Logout", key="logout_btn"):
 
         st.session_state.logged_in = False
 
@@ -474,7 +474,7 @@ filtered_city.plot(
 
 ax6.set_title(
     "Top Cities Based on Current Filters"
-)
+)    
 
 st.pyplot(fig6)
 
@@ -497,7 +497,7 @@ top_cuisines.plot(
 
 ax7.set_title(
     "Top Cuisines Based on Current Filters"
-)
+)    
 
 st.pyplot(fig7)
 
