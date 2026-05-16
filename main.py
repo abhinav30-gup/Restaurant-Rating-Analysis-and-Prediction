@@ -9,7 +9,7 @@ from sklearn.metrics import mean_absolute_error, r2_score
 # LOAD DATASET
 # =========================
 
-df = pd.read_csv("Dataset .csv")
+df = pd.read_csv("Dataset .csv" , encoding='latin-1')
 
 print("Dataset Loaded Successfully")
 print(df.head())
