@@ -153,10 +153,15 @@ Visual representation of restaurant ratings.
 ![Dashboard](screenshots/dashboard.png)
 
 ---
+## 🔐 Login Output
+
+![Login](screenshots/login.png)
+
+---
 
 ## 🤖 Prediction Output
 
-![Prediction](screenshots/prediction.png)
+![Prediction](screenshots/pridiction.png)
 
 ---
 
@@ -168,7 +173,7 @@ Visual representation of restaurant ratings.
 
 ## 🍽️ Recommendations
 
-![Output](screenshots/output.png)
+![output](screenshots/map.png)
 
 
 
