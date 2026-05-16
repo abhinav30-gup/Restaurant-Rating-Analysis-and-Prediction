@@ -21,55 +21,113 @@ st.set_page_config(
 # =========================
 
 st.markdown("""
-    <style>
+<style>
 
-    .main {
-        background-color: #0E1117;
-        color: white;
-    }
-
-    h1, h2, h3 {
-        color: #00FFAA;
-        text-align: center;
-    }
-
-    .stButton>button {
-        width: 100%;
-        background-color: #00FFAA;
-        color: black;
-        font-size: 18px;
-        border-radius: 10px;
-    }
-            
-    /* Mobile Optimization */
-
-@media (max-width: 768px) {
-
-    h1 {
-        font-size: 35px !important;
-    }
-
-    h2 {
-        font-size: 28px !important;
-    }
-
-    h3 {
-        font-size: 22px !important;
-    }
-
-    .stMetric {
-        text-align: center;
-    }
-
-    .stDataFrame {
-        overflow-x: auto;
-    }
-
+html, body, [class*="css"] {
+    font-family: 'Poppins', sans-serif;
+    background-color: #050816;
+    color: white;
 }
 
-    </style>
-""", unsafe_allow_html=True)
+.main {
+    background: linear-gradient(
+        135deg,
+        #050816,
+        #0b1026
+    );
+}
 
+h1 {
+    text-align: center;
+    font-size: 60px !important;
+    font-weight: bold;
+    color: #00F5FF;
+    text-shadow: 0px 0px 25px #00F5FF;
+}
+
+h2, h3 {
+    color: #00FFAA;
+    text-align: center;
+}
+
+.stButton>button {
+
+    width: 100%;
+    border-radius: 15px;
+    border: none;
+
+    background: linear-gradient(
+        90deg,
+        #00F5FF,
+        #00FFAA
+    );
+
+    color: black;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 12px;
+
+    transition: 0.3s;
+}
+
+.stButton>button:hover {
+
+    transform: scale(1.03);
+
+    box-shadow:
+        0px 0px 20px #00F5FF;
+}
+
+[data-testid="metric-container"] {
+
+    background: rgba(
+        255,
+        255,
+        255,
+        0.05
+    );
+
+    border-radius: 20px;
+
+    padding: 20px;
+
+    box-shadow:
+        0px 0px 15px rgba(
+            0,
+            255,
+            255,
+            0.3
+        );
+}
+
+.stDataFrame {
+
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+section[data-testid="stSidebar"] {
+
+    background: linear-gradient(
+        180deg,
+        #111827,
+        #050816
+    );
+}
+
+@media (max-width:768px){
+
+    h1{
+        font-size:40px !important;
+    }
+
+    h2{
+        font-size:28px !important;
+    }
+}
+
+</style>
+""", unsafe_allow_html=True)
 # =========================
 # LOAD MODEL
 # =========================
@@ -101,94 +159,121 @@ try:
 except:
     users = {}
 
-st.sidebar.header("🔐 Login / Signup")
-
-menu = st.sidebar.radio(
-    "Select Option",
-    ["Login", "Signup"]
-)
-
-username = st.sidebar.text_input("Username")
-password = st.sidebar.text_input(
-    "Password",
-    type="password"
-)
-
-logged_in = False
-
-# Signup
-if menu == "Signup":
-
-    if st.sidebar.button("Create Account"):
-
-        if username in users:
-            st.sidebar.error("User already exists")
-
-        else:
-            users[username] = password
-
-            with open(users_file, "w") as file:
-                json.dump(users, file)
-
-            st.sidebar.success(
-                "Account Created Successfully"
-            )
-
-# Login
-if menu == "Login":
-
-    if st.sidebar.button("Logout", key="logout_btn"):
-
-        if username in users and users[username] == password:
-
-            st.session_state.logged_in = True
-            st.session_state.username = username
-
-            st.sidebar.success("Login Successful")
-
-        else:
-            st.sidebar.error("Invalid Credentials")
-
-# Check login session
-logged_in = st.session_state.get("logged_in", False)
-
-# If not logged in
-if not logged_in:
-
-    st.title("🔐 Please Login First")    
-
-    st.warning("Login to access the AI Restaurant Dashboard")
-
-    st.stop()
-
-# Welcome message
-st.sidebar.success(
-    f"Welcome {st.session_state.username} 👋"
-)
-
-# Logout button
-if st.sidebar.button("Logout", key="logout_btn"):
-
+# Session state
+if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
 
-    st.rerun()
+if "username" not in st.session_state:
+    st.session_state.username = ""
 
-# Session check
-if "logged_in" in st.session_state:
-    logged_in = st.session_state.logged_in
+# SIDEBAR AUTH
+st.sidebar.header("🔐 Login / Signup")
 
-# =========================
-# TITLE
-# =========================
-if logged_in:
+# SHOW LOGIN/SIGNUP ONLY IF NOT LOGGED IN
+if not st.session_state.logged_in:
 
-    if st.sidebar.button("Logout", key="logout_btn"):
+    menu = st.sidebar.radio(
+        "Select Option",
+        ["Login", "Signup"]
+    )
+
+    username = st.sidebar.text_input(
+        "Username"
+    )
+
+    password = st.sidebar.text_input(
+        "Password",
+        type="password"
+    )
+
+    # SIGNUP
+    if menu == "Signup":
+
+        if st.sidebar.button(
+            "Create Account",
+            key="signup_btn"
+        ):
+
+            if username in users:
+
+                st.sidebar.error(
+                    "User already exists"
+                )
+
+            else:
+
+                users[username] = password
+
+                with open(users_file, "w") as file:
+                    json.dump(users, file)
+
+                st.sidebar.success(
+                    "Account Created Successfully"
+                )
+
+    # LOGIN
+    if menu == "Login":
+
+        if st.sidebar.button(
+            "Login",
+            key="login_btn"
+        ):
+
+            if (
+                username in users
+                and users[username] == password
+            ):
+
+                st.session_state.logged_in = True
+                st.session_state.username = username
+
+                st.rerun()
+
+            else:
+
+                st.sidebar.error(
+                    "Invalid Credentials"
+                )
+
+# IF LOGGED IN
+if st.session_state.logged_in:
+
+    st.sidebar.success(
+        f"Welcome {st.session_state.username} 👋"
+    )
+
+    if st.sidebar.button(
+        "Logout",
+        key="logout_btn"
+    ):
 
         st.session_state.logged_in = False
+        st.session_state.username = ""
 
         st.rerun()
 
-    st.title("🍴 AI Restaurant Rating Predictor")    
+# STOP APP IF NOT LOGGED IN
+if not st.session_state.logged_in:
+
+    st.markdown(
+        '''
+        <h1 style="
+        text-align:center;
+        color:#00FFAA;
+        margin-top:100px;
+        font-size:60px;
+        ">
+        🍴 AI Restaurant Rating Predictor
+        </h1>
+        ''',
+        unsafe_allow_html=True
+    )
+
+    st.warning(
+        "Please login to access the dashboard"
+    )
+
+    st.stop()  
 
 # =========================
 # KPI CARDS
