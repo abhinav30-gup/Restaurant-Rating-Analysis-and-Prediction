@@ -4,3 +4,5 @@ seaborn
 pandas
 matplotlib
 scikit-learn
+folium
+streamlit-folium

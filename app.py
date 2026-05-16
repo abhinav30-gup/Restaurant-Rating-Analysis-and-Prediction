@@ -2,6 +2,9 @@ import streamlit as st
 import pickle
 import pandas as pd
 import matplotlib.pyplot as plt
+import folium
+from streamlit_folium import st_folium
+import json
 
 # =========================
 # PAGE CONFIG
@@ -37,6 +40,32 @@ st.markdown("""
         font-size: 18px;
         border-radius: 10px;
     }
+            
+    /* Mobile Optimization */
+
+@media (max-width: 768px) {
+
+    h1 {
+        font-size: 35px !important;
+    }
+
+    h2 {
+        font-size: 28px !important;
+    }
+
+    h3 {
+        font-size: 22px !important;
+    }
+
+    .stMetric {
+        text-align: center;
+    }
+
+    .stDataFrame {
+        overflow-x: auto;
+    }
+
+}
 
     </style>
 """, unsafe_allow_html=True)
@@ -60,10 +89,83 @@ df = pd.read_csv(
 )
 
 # =========================
-# TITLE
+# USER AUTHENTICATION
 # =========================
 
-st.title("🍴 AI Restaurant Rating Predictor")
+users_file = "users.json"
+
+# Load users
+try:
+    with open(users_file, "r") as file:
+        users = json.load(file)
+except:
+    users = {}
+
+st.sidebar.header("🔐 Login / Signup")
+
+menu = st.sidebar.radio(
+    "Select Option",
+    ["Login", "Signup"]
+)
+
+username = st.sidebar.text_input("Username")
+password = st.sidebar.text_input(
+    "Password",
+    type="password"
+)
+
+logged_in = False
+
+# Signup
+if menu == "Signup":
+
+    if st.sidebar.button("Create Account"):
+
+        if username in users:
+            st.sidebar.error("User already exists")
+
+        else:
+            users[username] = password
+
+            with open(users_file, "w") as file:
+                json.dump(users, file)
+
+            st.sidebar.success(
+                "Account Created Successfully"
+            )
+
+# Login
+if menu == "Login":
+
+    if st.sidebar.button("Login"):
+
+        if username in users and users[username] == password:
+            logged_in = True
+            st.session_state.logged_in = True
+            st.sidebar.success("Login Successful")
+
+        else:
+            st.sidebar.error("Invalid Credentials")
+if not logged_in and not st.session_state.get("logged_in", False):
+    st.warning("Please login to access the app")
+    st.stop()
+
+# Session check
+if "logged_in" in st.session_state:
+    logged_in = st.session_state.logged_in
+
+# =========================
+# TITLE
+# =========================
+if logged_in:
+
+    if st.sidebar.button("Logout"):
+
+        st.session_state.logged_in = False
+
+        st.rerun()
+
+    st.title("🍴 AI Restaurant Rating Predictor")    
 
 # =========================
 # KPI CARDS
@@ -211,6 +313,29 @@ st.dataframe(
             'Average Cost for two'
         ]
     ].head(10)
+)
+
+# =========================
+# GOOGLE MAPS
+# =========================
+
+st.header("🗺️ Restaurant Location Map")
+
+# Example coordinates
+restaurant_map = folium.Map(
+    location=[28.6139, 77.2090],
+    zoom_start=5
+)
+
+folium.Marker(
+    [28.6139, 77.2090],
+    popup="Top Restaurant Area"
+).add_to(restaurant_map)
+
+st_folium(
+    restaurant_map,
+    width=700,
+    height=500
 )
 
 # =========================
