@@ -140,15 +140,38 @@ if menu == "Login":
     if st.sidebar.button("Login"):
 
         if username in users and users[username] == password:
-            logged_in = True
+
             st.session_state.logged_in = True
+            st.session_state.username = username
+
             st.sidebar.success("Login Successful")
 
         else:
             st.sidebar.error("Invalid Credentials")
-if not logged_in and not st.session_state.get("logged_in", False):
-    st.warning("Please login to access the app")
+
+# Check login session
+logged_in = st.session_state.get("logged_in", False)
+
+# If not logged in
+if not logged_in:
+
+    st.title("🔐 Please Login First")
+
+    st.warning("Login to access the AI Restaurant Dashboard")
+
     st.stop()
+
+# Welcome message
+st.sidebar.success(
+    f"Welcome {st.session_state.username} 👋"
+)
+
+# Logout button
+if st.sidebar.button("Logout"):
+
+    st.session_state.logged_in = False
+
+    st.rerun()
 
 # Session check
 if "logged_in" in st.session_state:
@@ -509,5 +532,5 @@ st.dataframe(
 
 st.markdown("""
 ---
-### 🚀 Built with Streamlit, Python & Machine Learning
+### 🚀 Built with ❤️ by Abhinav | AI Restaurant Rating Predictor
 """)
