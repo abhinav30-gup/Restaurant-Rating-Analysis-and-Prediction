@@ -3,6 +3,7 @@ import pickle
 import pandas as pd
 import matplotlib.pyplot as plt
 import folium
+from geopy.geocoders import Nominatim
 from streamlit_folium import st_folium
 import json
 
@@ -602,34 +603,22 @@ st.dataframe(
 
 st.header("🗺️ Restaurant Location Map")
 
-# City coordinates
-city_coordinates = {
+# Geolocator
+geolocator = Nominatim(
+    user_agent="restaurant_app"
+)
 
-    "New Delhi": [28.6139, 77.2090],
-    "Mumbai": [19.0760, 72.8777],
-    "Bangalore": [12.9716, 77.5946],
-    "Hyderabad": [17.3850, 78.4867],
-    "Pune": [18.5204, 73.8567],
-    "Chennai": [13.0827, 80.2707],
-    "Kolkata": [22.5726, 88.3639],
-    "Jaipur": [26.9124, 75.7873],
-    "London": [51.5074, -0.1278],
-    "Dubai": [25.2048, 55.2708],
-    "Istanbul": [41.0082, 28.9784],
-    "Abu Dhabi": [24.4539, 54.3773],
-    "Doha": [25.2854, 51.5310],
-    "Sharjah": [25.3463, 55.4209]
-}
+# Get location from selected city
+location = geolocator.geocode(selected_city)
 
-# Use selected city from explore section
+# Default coordinates
+lat, lon = 28.6139, 77.2090
 
-if selected_city in city_coordinates:
+# If city found
+if location:
 
-    lat, lon = city_coordinates[selected_city]
-
-else:
-
-    lat, lon = [28.6139, 77.2090]
+    lat = location.latitude
+    lon = location.longitude
 
 # Create map
 restaurant_map = folium.Map(
