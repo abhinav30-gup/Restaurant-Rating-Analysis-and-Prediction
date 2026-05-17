@@ -7,7 +7,7 @@ from streamlit_folium import st_folium
 import json
 
 # =========================
-# PAGE CONFIG
+# PAGE CONFIG   
 # =========================
 
 st.set_page_config(
@@ -128,6 +128,7 @@ section[data-testid="stSidebar"] {
 
 </style>
 """, unsafe_allow_html=True)
+
 # =========================
 # LOAD MODEL
 # =========================
