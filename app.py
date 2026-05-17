@@ -310,12 +310,19 @@ Predict restaurant ratings using Machine Learning and explore restaurant analyti
 
 st.sidebar.header("User Input")
 
-price_range = st.sidebar.slider(
-    "Price Range",
-    1,
-    4,
-    2
+price_options = {
+    "Budget 🍔": 1,
+    "Moderate 🍕": 2,
+    "Expensive 🍽️": 3,
+    "Luxury 🌟": 4
+}
+
+selected_price = st.sidebar.selectbox(
+    "💰 Select Price Category",
+    list(price_options.keys())
 )
+
+price_range = price_options[selected_price]
 
 votes = st.sidebar.number_input(
     "Votes",
